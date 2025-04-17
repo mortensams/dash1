@@ -1,0 +1,203 @@
+/* Basic styling without relying on Angular Material's theming system */
+
+/* Global styles */
+html, body { 
+  height: 100%; 
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+/* Define theme colors directly */
+:root {
+  --primary-color: #3f51b5;
+  --primary-color-light: #7986cb;
+  --primary-color-dark: #303f9f;
+  --accent-color: #ff4081;
+  --accent-color-light: #ff80ab;
+  --accent-color-dark: #c51162;
+  --warn-color: #f44336;
+  --text-color: rgba(0, 0, 0, 0.87);
+  --text-color-light: rgba(0, 0, 0, 0.54);
+  --background-color: #ffffff;
+  --background-color-light: #f5f5f5;
+  --border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Dashboard layout styles */
+.dashboard-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.panel {
+  height: 100%;
+  overflow: auto;
+}
+
+.widget-panel {
+  width: 300px;
+  border-right: 1px solid var(--border-color);
+}
+
+.dashboard-panel {
+  flex: 1;
+  background-color: var(--background-color-light);
+  position: relative;
+  overflow: auto;
+}
+
+.detail-panel {
+  width: 350px;
+  border-left: 1px solid var(--border-color);
+}
+
+/* Widget styling */
+.widget-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--background-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.widget-title {
+  flex: 1;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.widget-content {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.chart-container {
+  height: 100%;
+  width: 100%;
+}
+
+.drag-handle {
+  cursor: move;
+  margin-right: 8px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Widget panel styling */
+.section-header {
+  font-weight: 500;
+  margin: 16px 0 8px;
+  padding: 0 16px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.widget-card {
+  cursor: pointer;
+  text-align: center;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.widget-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin: 8px auto;
+  color: var(--primary-color);
+}
+
+/* Form styling */
+.form-row {
+  margin-bottom: 16px;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.accordion-content {
+  padding: 16px;
+}
+
+/* Expanded widget styles */
+.expanded-widget {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background-color: var(--background-color);
+}
+
+/* Material component style overrides */
+.mat-toolbar.mat-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.mat-button.mat-primary {
+  color: var(--primary-color);
+}
+
+.mat-icon {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
+}
+
+/* Add material icons font */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
+}

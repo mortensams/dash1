@@ -1,0 +1,33 @@
+<app-chart-widget>
+  <div class="chart-container">
+    <div class="line-chart-visualization">
+      <div class="chart-area">
+        <div class="line-series" *ngFor="let series of chartData; let i = index">
+          <div class="series-info">
+            <div class="series-color" [style.background-color]="getSeriesColor(i)"></div>
+            <span class="series-name">{{series.name}}</span>: 
+            <span class="series-value">{{getLatestValue(series) | number:'1.1-1'}}</span>
+          </div>
+        </div>
+        
+        <div class="chart-canvas">
+          <!-- Simplified visualization showing latest trends -->
+          <div class="trend-indicator" 
+               *ngFor="let series of chartData; let i = index"
+               [style.background-color]="getSeriesColor(i)">
+            <div class="trend-arrow" 
+                 [class.up]="getTrend(series) > 0"
+                 [class.down]="getTrend(series) < 0">
+              {{ getTrend(series) > 0 ? '↑' : (getTrend(series) < 0 ? '↓' : '→') }}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="axis-labels" *ngIf="showXAxisLabel || showYAxisLabel">
+        <div *ngIf="showYAxisLabel" class="y-axis-label">{{yAxisLabel}}</div>
+        <div *ngIf="showXAxisLabel" class="x-axis-label">{{xAxisLabel}}</div>
+      </div>
+    </div>
+  </div>
+</app-chart-widget>

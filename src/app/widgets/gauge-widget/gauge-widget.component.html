@@ -1,0 +1,33 @@
+<div class="gauge-widget-container">
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+  
+  <div *ngIf="error" class="error-overlay">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-button color="primary" (click)="loadData()">Retry</button>
+  </div>
+  
+  <div *ngIf="noData" class="no-data-overlay">
+    <mat-icon>speed</mat-icon>
+    <p>No data available</p>
+    <p class="hint">Configure a data source in the widget properties</p>
+  </div>
+  
+  <div class="chart-container">
+    <!-- Simple Gauge Implementation -->
+    <div class="gauge-wrapper">
+      <div class="gauge">
+        <div class="gauge-background"></div>
+        <div class="gauge-fill" [style.transform]="'rotate(' + ((gaugeValue - min) / (max - min) * angleSpan - (angleSpan/2)) + 'deg)'"></div>
+        <div class="gauge-cover">
+          <div class="gauge-value">{{ gaugeValue | number:'1.0-1' }}</div>
+          <div class="gauge-units">{{ units }}</div>
+        </div>
+      </div>
+      <div class="gauge-min">{{ min }}</div>
+      <div class="gauge-max">{{ max }}</div>
+    </div>
+  </div>
+</div>

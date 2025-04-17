@@ -1,0 +1,49 @@
+<div class="dashboard-container">
+  <!-- Header Toolbar -->
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="toggleWidgetPanel()">
+      <mat-icon>{{ showWidgetPanel ? 'menu_open' : 'menu' }}</mat-icon>
+    </button>
+    <span>{{ dashboard.name }}</span>
+    <span class="spacer"></span>
+    <button mat-button (click)="saveDashboard()">
+      <mat-icon>save</mat-icon> Save
+    </button>
+    <button mat-button [matMenuTriggerFor]="dashboardMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #dashboardMenu="matMenu">
+      <button mat-menu-item (click)="loadDashboard()">
+        <mat-icon>folder_open</mat-icon> Load Dashboard
+      </button>
+      <button mat-menu-item (click)="saveDashboard()">
+        <mat-icon>save</mat-icon> Save Dashboard
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon> Dashboard Settings
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <!-- Main Content Area with 2-panel layout -->
+  <div class="dashboard-content">
+    <!-- Left Panel: Widget Toolbox (collapsible) -->
+    <app-widget-panel 
+      *ngIf="showWidgetPanel"
+      class="panel widget-panel"
+      (addWidget)="addWidget($event)">
+    </app-widget-panel>
+
+    <!-- Main Panel: Dashboard -->
+    <app-dashboard-panel 
+      class="panel dashboard-panel"
+      [dashboard]="dashboard"
+      [selectedWidget]="selectedWidget"
+      (selectWidget)="selectWidget($event)"
+      (updateWidget)="updateWidget($event)"
+      (removeWidget)="removeWidget($event)"
+      (clearSelection)="clearSelection()">
+    </app-dashboard-panel>
+  </div>
+</div>

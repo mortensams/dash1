@@ -1,0 +1,51 @@
+<div class="dashboard-panel" (click)="onGridClick($event)">
+  <gridster [options]="options">
+    <gridster-item 
+      *ngFor="let widget of widgets" 
+      [item]="widget"
+      [ngClass]="getWidgetClass(widget)"
+      (itemChange)="onItemChange(widget, $event)"
+      (click)="onWidgetClick($event, widget)">
+      
+      <div class="widget-container">
+        <div class="widget-header">
+          <mat-icon class="drag-handle">drag_indicator</mat-icon>
+          <h3 class="widget-title">{{ widget.title }}</h3>
+          <div class="widget-actions">
+            <button mat-icon-button (click)="onRemoveWidget($event, widget)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        
+        <div class="widget-content">
+          <!-- Line Chart -->
+          <div *ngIf="widget.type === WidgetType.LINE_CHART" class="chart-container">
+            <app-line-chart-widget [widget]="widget"></app-line-chart-widget>
+          </div>
+          
+          <!-- Bar Chart -->
+          <div *ngIf="widget.type === WidgetType.BAR_CHART" class="chart-container">
+            <app-bar-chart-widget [widget]="widget"></app-bar-chart-widget>
+          </div>
+          
+          <!-- Pie Chart -->
+          <div *ngIf="widget.type === WidgetType.PIE_CHART" class="chart-container">
+            <app-pie-chart-widget [widget]="widget"></app-pie-chart-widget>
+          </div>
+          
+          <!-- Gauge -->
+          <div *ngIf="widget.type === WidgetType.GAUGE" class="chart-container">
+            <app-gauge-widget [widget]="widget"></app-gauge-widget>
+          </div>
+          
+          <!-- Card -->
+          <div *ngIf="widget.type === WidgetType.CARD" class="chart-container">
+            <app-card-widget [widget]="widget"></app-card-widget>
+          </div>
+        </div>
+      </div>
+      
+    </gridster-item>
+  </gridster>
+</div>

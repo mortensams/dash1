@@ -1,0 +1,34 @@
+<div class="card-widget-container" [style.background-color]="backgroundColor" [style.color]="textColor">
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+  
+  <div *ngIf="error" class="error-overlay">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-button color="primary" (click)="loadData()">Retry</button>
+  </div>
+  
+  <div *ngIf="noData" class="no-data-overlay">
+    <mat-icon>insert_chart</mat-icon>
+    <p>No data available</p>
+    <p class="hint">Configure a data source in the widget properties</p>
+  </div>
+  
+  <div class="card-content" *ngIf="!loading && !error && !noData">
+    <div class="card-header">
+      <mat-icon class="card-icon">{{ icon }}</mat-icon>
+    </div>
+    
+    <div class="card-value">
+      {{ formatValue(value) }}<span class="units">{{ units }}</span>
+    </div>
+    
+    <div class="card-trend" *ngIf="trendValue !== 0">
+      <div class="trend-info" [ngClass]="getTrendClass()">
+        <mat-icon class="trend-icon">{{ getTrendIcon() }}</mat-icon>
+        <span class="trend-value">{{ trendValue | number:'1.1-1' }}%</span>
+      </div>
+    </div>
+  </div>
+</div>

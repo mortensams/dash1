@@ -1,0 +1,30 @@
+<div class="widget-panel-container">
+  <h2 class="panel-title mat-h2">Widget Toolbox</h2>
+  
+  <mat-divider></mat-divider>
+  
+  <div class="widget-categories">
+    <mat-accordion multi="true">
+      <mat-expansion-panel *ngFor="let category of widgetCategories" [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ category.name }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <div class="widget-grid">
+          <mat-card 
+            *ngFor="let widget of category.widgets" 
+            class="widget-item" 
+            (click)="onAddWidget(widget.type)">
+            <mat-card-content>
+              <mat-icon class="widget-icon">{{ widget.icon }}</mat-icon>
+              <h3 class="widget-name">{{ widget.name }}</h3>
+              <p class="widget-description">{{ widget.description }}</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

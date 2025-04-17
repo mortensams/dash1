@@ -1,0 +1,289 @@
+<h2 mat-dialog-title>Widget Properties: {{ widget.title }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="widgetForm">
+    <div class="title-row">
+      <mat-form-field class="full-width">
+        <mat-label>Widget Title</mat-label>
+        <input matInput formControlName="title">
+      </mat-form-field>
+    </div>
+    
+    <mat-tab-group [(selectedIndex)]="activeTabIndex">
+      <!-- Data Tab -->
+      <mat-tab label="Data">
+        <div class="tab-content" formGroupName="dataSource">
+          <h3>Data Source</h3>
+          
+          <!-- Facility Selection -->
+          <mat-form-field class="full-width">
+            <mat-label>Facility</mat-label>
+            <mat-select formControlName="facilityId" (selectionChange)="onFacilityChange($event.value)">
+              <mat-option *ngFor="let facility of facilities" [value]="facility.id">
+                {{facility.name}}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Leave empty to use test data</mat-hint>
+          </mat-form-field>
+          
+          <!-- System Selection -->
+          <mat-form-field class="full-width">
+            <mat-label>System</mat-label>
+            <mat-select formControlName="systemId" (selectionChange)="onSystemChange($event.value)" [disabled]="!facilities.length">
+              <mat-option *ngFor="let system of systems" [value]="system.id">
+                {{system.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <!-- Device Selection -->
+          <mat-form-field class="full-width">
+            <mat-label>Device</mat-label>
+            <mat-select formControlName="deviceId" (selectionChange)="onDeviceChange($event.value)" [disabled]="!systems.length">
+              <mat-option *ngFor="let device of devices" [value]="device.id">
+                {{device.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <!-- Metrics Selection -->
+          <mat-form-field class="full-width">
+            <mat-label>Metrics</mat-label>
+            <mat-select formControlName="metrics" multiple [disabled]="!devices.length">
+              <mat-option *ngFor="let metric of availableMetrics" [value]="metric.id">
+                {{metric.name}} ({{metric.unit}})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+      
+      <!-- Time Tab -->
+      <mat-tab label="Time">
+        <div class="tab-content" formGroupName="timeSettings">
+          <h3>Time Settings</h3>
+          
+          <mat-slide-toggle formControlName="useGlobalTime" (change)="onUseGlobalTimeChange()">
+            Use Dashboard Time
+          </mat-slide-toggle>
+          
+          <div formGroupName="customTimeRange" *ngIf="!widgetForm.get('timeSettings.useGlobalTime')?.value">
+            <h4>Custom Time Range</h4>
+            
+            <mat-form-field class="full-width">
+              <mat-label>From</mat-label>
+              <input matInput [matDatepicker]="fromPicker" formControlName="from">
+              <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+              <mat-datepicker #fromPicker></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field class="full-width">
+              <mat-label>To</mat-label>
+              <input matInput [matDatepicker]="toPicker" formControlName="to">
+              <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+              <mat-datepicker #toPicker></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Relative Range</mat-label>
+              <mat-select formControlName="relativeRange">
+                <mat-option value="last30m">Last 30 minutes</mat-option>
+                <mat-option value="last1h">Last hour</mat-option>
+                <mat-option value="last3h">Last 3 hours</mat-option>
+                <mat-option value="last12h">Last 12 hours</mat-option>
+                <mat-option value="last24h">Last 24 hours</mat-option>
+                <mat-option value="last7d">Last 7 days</mat-option>
+                <mat-option value="last30d">Last 30 days</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          
+          <h4>Refresh Settings</h4>
+          <mat-form-field class="full-width">
+            <mat-label>Refresh Interval (seconds)</mat-label>
+            <input matInput type="number" formControlName="refreshInterval" min="0">
+            <mat-hint>0 means no automatic refresh</mat-hint>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+      
+      <!-- Visualization Tab -->
+      <mat-tab label="Visualization">
+        <div class="tab-content" formGroupName="visualization">
+          <h3>Display Settings</h3>
+          
+          <!-- Common Chart Settings -->
+          <mat-form-field class="full-width">
+            <mat-label>Color Scheme</mat-label>
+            <mat-select formControlName="scheme">
+              <mat-option *ngFor="let scheme of colorSchemes" [value]="scheme.value">
+                {{scheme.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <div class="checkbox-row">
+            <mat-checkbox formControlName="gradient">Use gradient colors</mat-checkbox>
+          </div>
+          
+          <div class="checkbox-row">
+            <mat-checkbox formControlName="animations">Enable animations</mat-checkbox>
+          </div>
+          
+          <div class="checkbox-row">
+            <mat-checkbox formControlName="legend">Show legend</mat-checkbox>
+          </div>
+          
+          <!-- Axis Settings (for charts with axes) -->
+          <ng-container *ngIf="widget && (widget.type === widgetType.LINE_CHART || widget.type === widgetType.BAR_CHART)">
+            <h4>Axis Settings</h4>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="showGridLines">Show grid lines</mat-checkbox>
+            </div>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="showXAxisLabel">Show X-axis label</mat-checkbox>
+            </div>
+            
+            <mat-form-field class="full-width" *ngIf="widgetForm.get('visualization.showXAxisLabel')?.value">
+              <mat-label>X-Axis Label</mat-label>
+              <input matInput formControlName="xAxisLabel">
+            </mat-form-field>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="showYAxisLabel">Show Y-axis label</mat-checkbox>
+            </div>
+            
+            <mat-form-field class="full-width" *ngIf="widgetForm.get('visualization.showYAxisLabel')?.value">
+              <mat-label>Y-Axis Label</mat-label>
+              <input matInput formControlName="yAxisLabel">
+            </mat-form-field>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="roundDomains">Round domains</mat-checkbox>
+            </div>
+          </ng-container>
+          
+          <!-- Line Chart Specific Settings -->
+          <ng-container *ngIf="widget && widget.type === widgetType.LINE_CHART">
+            <h4>Line Chart Settings</h4>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Curve Type</mat-label>
+              <mat-select formControlName="curve">
+                <mat-option *ngFor="let curve of curveTypes" [value]="curve.value">
+                  {{curve.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="autoScale">Auto scale</mat-checkbox>
+            </div>
+          </ng-container>
+          
+          <!-- Bar Chart Specific Settings -->
+          <ng-container *ngIf="widget && widget.type === widgetType.BAR_CHART">
+            <h4>Bar Chart Settings</h4>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Bar Padding</mat-label>
+              <input matInput type="number" formControlName="barPadding" min="0">
+            </mat-form-field>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Group Padding</mat-label>
+              <input matInput type="number" formControlName="groupPadding" min="0">
+            </mat-form-field>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="showDataLabel">Show data labels</mat-checkbox>
+            </div>
+          </ng-container>
+          
+          <!-- Pie Chart Specific Settings -->
+          <ng-container *ngIf="widget && widget.type === widgetType.PIE_CHART">
+            <h4>Pie Chart Settings</h4>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="doughnut">Doughnut style</mat-checkbox>
+            </div>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="explodeSlices">Explode slices</mat-checkbox>
+            </div>
+            
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="labels">Show labels</mat-checkbox>
+            </div>
+          </ng-container>
+          
+          <!-- Gauge Specific Settings -->
+          <ng-container *ngIf="widget && widget.type === widgetType.GAUGE">
+            <h4>Gauge Settings</h4>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Minimum Value</mat-label>
+              <input matInput type="number" formControlName="min">
+            </mat-form-field>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Maximum Value</mat-label>
+              <input matInput type="number" formControlName="max">
+            </mat-form-field>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Units</mat-label>
+              <input matInput formControlName="units">
+            </mat-form-field>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Angle Span (degrees)</mat-label>
+              <input matInput type="number" formControlName="angleSpan" min="0" max="360">
+            </mat-form-field>
+            
+            <mat-form-field class="full-width">
+              <mat-label>Start Angle (degrees)</mat-label>
+              <input matInput type="number" formControlName="startAngle" min="-360" max="360">
+            </mat-form-field>
+          </ng-container>
+        </div>
+      </mat-tab>
+      
+      <!-- Layout Tab -->
+      <mat-tab label="Layout">
+        <div class="tab-content" formGroupName="general">
+          <h3>Position & Size</h3>
+          
+          <div class="position-grid">
+            <mat-form-field>
+              <mat-label>X Position</mat-label>
+              <input matInput type="number" formControlName="x" min="0">
+            </mat-form-field>
+            
+            <mat-form-field>
+              <mat-label>Y Position</mat-label>
+              <input matInput type="number" formControlName="y" min="0">
+            </mat-form-field>
+            
+            <mat-form-field>
+              <mat-label>Width (cols)</mat-label>
+              <input matInput type="number" formControlName="cols" min="1">
+            </mat-form-field>
+            
+            <mat-form-field>
+              <mat-label>Height (rows)</mat-label>
+              <input matInput type="number" formControlName="rows" min="1">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="widgetForm.invalid" (click)="saveChanges()">Save</button>
+</mat-dialog-actions>

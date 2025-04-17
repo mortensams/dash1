@@ -1,0 +1,26 @@
+<app-chart-widget>
+  <div *ngIf="!doughnut" class="chart-wrapper">
+    <ngx-charts-pie-chart
+      [view]="[chartWidth, chartHeight]"
+      [scheme]="colorScheme"
+      [results]="chartData"
+      [gradient]="gradient"
+      [legend]="widget.config?.legend"
+      [labels]="labels"
+      [explodeSlices]="explodeSlices"
+      [animations]="animations"
+      (select)="onSelect($event)">
+    </ngx-charts-pie-chart>
+  </div>
+  
+  <div *ngIf="doughnut" class="chart-wrapper">
+    <ngx-charts-pie-grid
+      [view]="[chartWidth, chartHeight]"
+      [scheme]="colorScheme"
+      [results]="chartData"
+      [designatedTotal]="100"
+      [animations]="animations"
+      (select)="onSelect($event)">
+    </ngx-charts-pie-grid>
+  </div>
+</app-chart-widget>
